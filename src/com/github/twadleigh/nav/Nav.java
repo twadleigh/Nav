@@ -89,7 +89,8 @@ public class Nav {
 	private RealMatrix P;
 	
 	// process error
-	private final RealMatrix Q;
+	// TODO implement this!
+	private final RealMatrix Q = null;
 	
 	void update(long  tNew_nS) {
 		if(tNew_nS == t_nS) return;
@@ -115,10 +116,11 @@ public class Nav {
 	}
 	
 	RealMatrix getJacobian() {
-		
+		// TODO implement this!
+		return null;
 	}
 	
 	void fuseGps(long timestamp, double lon_DEG, double lat_DEG, double alt_M, double acc_M) {
-		
+		// TODO implement this!
 	}
 }
