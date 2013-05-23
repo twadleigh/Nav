@@ -1,12 +1,13 @@
 package com.github.twadleigh.nav;
 
+import java.util.Arrays;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-
-import android.location.Location;
 
 public class Nav {
 	
@@ -88,11 +89,12 @@ public class Nav {
 	// system error
 	private RealMatrix P;
 	
-	// process error
-	// TODO implement this!
-	private final RealMatrix Q = null;
+	// process noise
+	static private double ACCELERATION_NOISE_M2pS4pS = 1.0e-12;
+	static private double ROTATION_RATE_NOISE_RAD2pS2pS = 1.0e-6;
+	static private final RealMatrix Q = getProcessError();
 	
-	void update(long  tNew_nS) {
+	public void update(long  tNew_nS) {
 		if(tNew_nS == t_nS) return;
 		
 		double dt_S = 1.0e-9*((double)(tNew_nS-t_nS));
@@ -111,16 +113,25 @@ public class Nav {
 		theta = (new Rotation(omega_RADpS,dTheta_RAD)).applyTo(theta);
 		
 		// update error
-		RealMatrix F = getJacobian();
+		RealMatrix F = getJacobian(dt_S);
 		P = F.multiply(P).multiply(F.transpose()).add(Q.scalarMultiply(dt_S));
 	}
 	
-	RealMatrix getJacobian() {
+	public void fuseGps(long timestamp, double lon_DEG, double lat_DEG, double alt_M, double acc_M) {
 		// TODO implement this!
-		return null;
 	}
 	
-	void fuseGps(long timestamp, double lon_DEG, double lat_DEG, double alt_M, double acc_M) {
-		// TODO implement this!
+	private RealMatrix getJacobian(double dt_S) {
+		RealMatrix F = MatrixUtils.createRealIdentityMatrix(34);
+		
+		return F;
+	}
+	
+	private static RealMatrix getProcessError() {
+		double[] diag = new double[34];
+		Arrays.fill(diag, 0.0);
+		diag[6] = diag[7] = diag[8] = ACCELERATION_NOISE_M2pS4pS;
+		diag[12] = diag[13] = diag[14] = ROTATION_RATE_NOISE_RAD2pS2pS;
+		return MatrixUtils.createRealDiagonalMatrix(diag);
 	}
 }
