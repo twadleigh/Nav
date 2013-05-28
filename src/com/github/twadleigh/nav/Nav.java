@@ -2,6 +2,7 @@ package com.github.twadleigh.nav;
 
 import java.util.Arrays;
 
+import org.apache.commons.math3.complex.Quaternion;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -53,46 +54,23 @@ public class Nav {
 	// time (nanoseconds since startup)
 	private long t_nS;
 	
-	// position
-	private Vector3D x_M;
+	// state estimate
+	private State x = new State();
+	private RealMatrix P = new Array2DRowRealMatrix(34,34);
 	
-	// velocity
-	private Vector3D v_MpS;
+	// parameters
+	private static State x0; // initial state
+	private static State P0; // initial uncertainty
+	private static RealMatrix Q; // process error
+	private static RealMatrix Rgps; // GPS noise
+	private static RealMatrix Racc; // accelerometer noise
+	private static RealMatrix Rgyr; // gyroscope noise
+	private static RealMatrix Rmag; // magnetometer noise
 	
-	// acceleration
-	private Vector3D a_MpS2;
-	
-	// orientation
-	private Rotation theta;
-	
-	// rotation rate
-	private Vector3D omega_RADpS;
-	
-	// gravity
-	private Vector3D g_MpS2;
-	
-	// magnetic field
-	private Vector3D f_uT;
-	
-	// GPS bias
-	private Vector3D x0_M;
-	
-	// accelerometer bias
-	private Vector3D a0_MpS2;
-	
-	// gyroscope bias
-	private Vector3D omega0_RADpS;
-	
-	// magnetometer bias
-	private Vector3D f0_uT;
-	
-	// system error
-	private RealMatrix P;
-	
-	// process noise
-	static private double ACCELERATION_NOISE_M2pS4pS = 1.0e-12;
-	static private double ROTATION_RATE_NOISE_RAD2pS2pS = 1.0e-6;
-	static private final RealMatrix Q = getProcessError();
+	public Nav() {
+		 x = x0.copy();
+		 P = P0.copy();
+	}
 	
 	public void update(long  tNew_nS) {
 		if(tNew_nS == t_nS) return;
@@ -133,5 +111,10 @@ public class Nav {
 		diag[6] = diag[7] = diag[8] = ACCELERATION_NOISE_M2pS4pS;
 		diag[12] = diag[13] = diag[14] = ROTATION_RATE_NOISE_RAD2pS2pS;
 		return MatrixUtils.createRealDiagonalMatrix(diag);
+	}
+	
+	// *** rotation jacobian ***
+	private final void rotationJacobian(Array2DRowRealMatrix J, Vector3D x, Quaternion q) {	
+		
 	}
 }
