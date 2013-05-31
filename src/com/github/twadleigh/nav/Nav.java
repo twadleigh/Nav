@@ -7,8 +7,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 public class Nav {
 	
@@ -53,14 +55,30 @@ public class Nav {
 	
 	// time (nanoseconds since startup)
 	private long t_nS;
+
+	// size
+	private static final int SIZE = 34;
+	
+	// offsets
+	private static final int POSITION = 0;
+	private static final int VELOCITY = 3;
+	private static final int ACCELERATION = 6;
+	private static final int ORIENTATION = 9;
+	private static final int ROTATION_RATE = 13;
+	private static final int GRAVITY = 16;
+	private static final int MAGNETIC_FIELD = 19;
+	private static final int GPS_BIAS = 22;
+	private static final int GYROSCOPE_BIAS = 25;
+	private static final int ACCELEROMETER_BIAS = 28;
+	private static final int MAGNETOMETER_BIAS = 31;
 	
 	// state estimate
-	private State x = new State();
+	private RealVector x = new ArrayRealVector(SIZE);
 	private RealMatrix P = new Array2DRowRealMatrix(34,34);
 	
 	// parameters
-	private static State x0; // initial state
-	private static State P0; // initial uncertainty
+	private static RealVector x0; // initial state
+	private static RealMatrix P0; // initial uncertainty
 	private static RealMatrix Q; // process error
 	private static RealMatrix Rgps; // GPS noise
 	private static RealMatrix Racc; // accelerometer noise
@@ -81,10 +99,15 @@ public class Nav {
 		t_nS = tNew_nS;
 		
 		// update position
-		x_M = x_M.add(dt_S, v_MpS).add(0.5*dt_S*dt_S, a_MpS2);
+		double hdt2 = 0.5*dt_S*dt_S;
+		x.setEntry(POSITION+0, dt_S*x.getEntry(VELOCITY+0) + hdt2*x.getEntry(ACCELERATION+0));
+		x.setEntry(POSITION+1, dt_S*x.getEntry(VELOCITY+1) + hdt2*x.getEntry(ACCELERATION+1));
+		x.setEntry(POSITION+2, dt_S*x.getEntry(VELOCITY+2) + hdt2*x.getEntry(ACCELERATION+2));
 		
 		// update velocity
-		v_MpS = v_MpS.add(dt_S, a_MpS2);
+		x.setEntry(VELOCITY+0, dt_S*x.getEntry(ACCELERATION+0));
+		x.setEntry(VELOCITY+1, dt_S*x.getEntry(ACCELERATION+1));
+		x.setEntry(VELOCITY+2, dt_S*x.getEntry(ACCELERATION+2));
 		
 		// update orientation
 		double dTheta_RAD = dt_S * omega_RADpS.getNorm();
