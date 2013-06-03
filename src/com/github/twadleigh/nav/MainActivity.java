@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
@@ -68,7 +67,8 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
 	@Override
 	public void onLocationChanged(Location loc) {
 		// update the location
-		String str = "" + SystemClock.uptimeMillis()*1000000 + "," + loc.getTime() + "," + loc.getLatitude() + "," + loc.getLongitude() + "," + loc.getAltitude();
+		//String str = "" + SystemClock.uptimeMillis()*1000000 + "," + loc.getTime() + "," + loc.getLatitude() + "," + loc.getLongitude() + "," + loc.getAltitude();
+		String str = Integer.toString(Nav.theAnswer());
 		txt(R.id.location_text).setText(str);
 	}
 

@@ -1,14 +1,5 @@
 package com.github.twadleigh.nav;
 
-import org.apache.commons.math3.exception.DimensionMismatchException;
-import org.apache.commons.math3.exception.NotPositiveException;
-import org.apache.commons.math3.exception.OutOfRangeException;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.FastMath;
 
 public class State {
@@ -143,6 +134,7 @@ public class State {
 	}
 	
 	// Jacobians
+	/*
 	public void calcUpdateJacobianTranspose(double dt, double[][] J, State dState, State ws) {
 		
 		// TODO make this correct!
@@ -162,7 +154,7 @@ public class State {
 			J[i][1] *= scale;
 			J[i][2] *= scale;
 		}
-	}
+	}*/
 	
 	public void calcGpsJacobianTranspose(double[][] J, State dState, double [] ws) {
 		for(int i = 0; i < SIZE; ++i) {

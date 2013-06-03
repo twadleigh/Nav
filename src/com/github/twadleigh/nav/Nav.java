@@ -1,18 +1,21 @@
 package com.github.twadleigh.nav;
 
-import java.util.Arrays;
-
 import org.apache.commons.math3.complex.Quaternion;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 public class Nav {
+	
+	static {
+		System.loadLibrary("NavJni");
+	}
+
+	public static native int theAnswer();
 	
 	// *** static stuff ***
 
@@ -89,7 +92,7 @@ public class Nav {
 		 x = x0.copy();
 		 P = P0.copy();
 	}
-	
+	/*
 	public void update(long  tNew_nS) {
 		if(tNew_nS == t_nS) return;
 		
@@ -135,7 +138,7 @@ public class Nav {
 		diag[12] = diag[13] = diag[14] = ROTATION_RATE_NOISE_RAD2pS2pS;
 		return MatrixUtils.createRealDiagonalMatrix(diag);
 	}
-	
+	*/
 	// *** rotation jacobian ***
 	private final void rotationJacobian(Array2DRowRealMatrix J, Vector3D x, Quaternion q) {	
 		
