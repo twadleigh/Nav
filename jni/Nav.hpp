@@ -14,7 +14,7 @@ struct State {
 	static int GRAVITY_OFFSET = 17;
 	static int MAGNETIC_FIELD_OFFSET = 20;
 
-	double data[SIZE];
+	Eigen::Matrix<double, SIZE,1> data;
 
 	typedef Eigen::Vector3d vec;
 	typedef const vec cvec;
@@ -76,6 +76,10 @@ struct State {
 	vec magnetometer() const {
 		return orientation() * magneticField();
 	}
+};
+
+struct Nav {
+
 };
 
 #endif /* NAV_HPP_ */

@@ -17,40 +17,6 @@ public class Nav {
 
 	public static native int theAnswer();
 	
-	// *** static stuff ***
-
-	// WGS84 constants
-	static final public double WGS84_SEMI_MAJOR_AXIS_M = 6378137.0;
-	static final public double WGS84_INVERSE_FLATTENING = 298.257223563;
-	static final public double WGS84_FLATTENING = 1.0/Nav.WGS84_INVERSE_FLATTENING;
-	static final public double WGS84_FIRST_ECCENTRICITY_SQUARED = 
-			1.0-(1.0-Nav.WGS84_FLATTENING)*(1.0-Nav.WGS84_FLATTENING);
-	
-	static public Vector3D geodeticToEcef(double lon_DEG, double lat_DEG, double alt_M) {
-		double lon_RAD = Math.toRadians(lon_DEG);
-		double lat_RAD = Math.toRadians(lat_DEG);
-		double sLon = Math.sin(lon_RAD);
-		double cLon = Math.cos(lon_RAD);
-		double sLat = Math.sin(lat_RAD);
-		double cLat = Math.cos(lat_RAD);
-		
-		double N = Nav.WGS84_SEMI_MAJOR_AXIS_M/
-				Math.sqrt(1.0-Nav.WGS84_FIRST_ECCENTRICITY_SQUARED*sLat*sLat);
-		
-		return new Vector3D(
-				(N+alt_M)*cLat*cLon,
-				(N+alt_M)*cLat*sLon,
-				(N*(1.0-Nav.WGS84_FIRST_ECCENTRICITY_SQUARED)+alt_M)*sLat);
-	}
-	
-	static public Rotation ecefToEnuRotation(double lon_DEG, double lat_DEG, double alt_M) {
-		return new Rotation(
-				RotationOrder.ZXZ, 
-				Math.toRadians(lon_DEG), 
-				Math.toRadians(lat_DEG),
-				0.0);
-	}
-	
 	// *** state ***
 	
 	// origin of ENU frame
