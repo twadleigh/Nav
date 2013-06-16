@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements LocationListener, SensorEventListener {
 	
@@ -34,6 +33,15 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        // initialize Nav
+        Location loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Nav.initialize(
+        		loc.getElapsedRealtimeNanos(),
+        		loc.getLongitude(),
+        		loc.getLatitude(),
+        		loc.getAltitude(),
+        		loc.getAccuracy());
     }
     
     @Override
@@ -59,28 +67,26 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         return true;
     }
     
-    private TextView txt(int id)
-    {
-    	return (TextView) this.findViewById(id);
-    }
-
 	@Override
 	public void onLocationChanged(Location loc) {
-		// update the location
-		//String str = "" + SystemClock.uptimeMillis()*1000000 + "," + loc.getTime() + "," + loc.getLatitude() + "," + loc.getLongitude() + "," + loc.getAltitude();
-		String str = Integer.toString(Nav.theAnswer());
-		txt(R.id.location_text).setText(str);
+		Nav.updateGps(
+        		loc.getElapsedRealtimeNanos(),
+        		loc.getLongitude(),
+        		loc.getLatitude(),
+        		loc.getAltitude(),
+        		loc.getAccuracy());
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent evt) {
-		String str = "" + evt.timestamp + "," + evt.values[0] + "," + evt.values[1] + "," + evt.values[2];
+		long t = evt.timestamp;
+		float[] v = evt.values;
 		if(evt.sensor == mAccelerometer) {
-			txt(R.id.accelerometer_text).setText(str);
+			Nav.updateAccelerometer(t,v);
 		} else if(evt.sensor == mGyroscope) {
-			txt(R.id.gyroscope_text).setText(str);
+			Nav.updateGyroscope(t,v);
 		} else if(evt.sensor == mMagneticField) {
-			txt(R.id.magnetic_field_text).setText(str);
+			Nav.updateMagnetometer(t,v);
 		}
 	}
 

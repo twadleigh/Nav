@@ -4,6 +4,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := NavJni
 LOCAL_C_INCLUDES := /usr/include/eigen3
-LOCAL_SRC_FILES := NavJni.cpp
+LOCAL_SRC_FILES := NavJni.cpp Nav.cpp
 
 include $(BUILD_SHARED_LIBRARY)
